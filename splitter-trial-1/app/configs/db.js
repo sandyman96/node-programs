@@ -18,8 +18,8 @@
 
 module.exports = {
     host: 'localhost',
-    user: 'splitter',
-    password: 'splitter',
+    user: 'root',
+    password: 'toor',
     database: 'splitter',
     dialect: 'mysql'
 }

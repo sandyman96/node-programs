@@ -1,18 +1,15 @@
 var Task = require('../model/appModel.js');
-var x;
 
-exports.registerUser = (userName, userEmail, userPhone, userPassword) => {
+exports.registerUser = (userName, userEmail, userPhone, userPassword, next) => {
     Task.registerUser(userName, userEmail, userPhone, userPassword, function(err,res) {
         if(err){
         // console.log(err);
             // replyToClient(res); //result is "error"
             x = "error";
                 }else{
-                // console.log(res);
-                // replyToClient("success");
-                x = "success";
+                next(4);
+                return next(4);
                 }
         });
-        console.log(x);
-        return "hello";
+        return next();
 };

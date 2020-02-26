@@ -15,8 +15,10 @@ EXPRESS_APPLICATION.post('/api/users/register', function (req, res) {
         bodyContents["userName"],
         bodyContents["userEmail"],
         bodyContents["userPhone"],
-        bodyContents["userPassword"]
+        bodyContents["userPassword"],
+        
     );
+    console.log(reply);
     res.send(reply);
 });
 

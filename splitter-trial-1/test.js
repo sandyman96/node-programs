@@ -1,6 +1,17 @@
-const server = require('./app/configs/app')();
-const SERVER_CONFIG = require('./app/configs/config/config');
-const DB = require('./app/configs/db');
+const Sequelize = require('sequelize');
 
-//create the basic server setup 
-server.create(SERVER_CONFIG, DB);
+// Option 1: Passing parameters separately
+ sequelize = new Sequelize('splitter', 'root', 'toor', {
+    host: 'localhost',
+    dialect: 'mysql' /* one of 'mysql' | 'mariadb' | 'postgres' | 'mssql' */
+});
+
+
+sequelize
+    .authenticate()
+    .then(() => {
+        console.log('Connection has been established successfully.');
+    })
+    .catch(err => {
+        console.error('Unable to connect to the database:', err);
+    });

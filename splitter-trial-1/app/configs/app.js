@@ -6,7 +6,7 @@ this file defines the server configuration.
 */
 const express = require('express');
 const bodyParser = require('body-parser');
-const sequelize = require('sequelize');
+const Sequelize = require('sequelize');
 
 module.exports = function () {
     let server = express(),
@@ -23,14 +23,6 @@ module.exports = function () {
         server.use(bodyParser.urlencoded({
             extended: false
         }));
-        //connect the database
-        // mongoose.connect(
-        //     db.database,
-        //     {
-        //         useNewUrlParser: true,
-        //         useCreateIndex: true
-        //     }
-        // );
         sequelize = new Sequelize(db.database, db.user, db.password, {
             host: db.host,
             dialect: 'mysql' /* one of 'mysql' | 'mariadb' | 'postgres' | 'mssql' */
