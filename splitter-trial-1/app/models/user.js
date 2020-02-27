@@ -1,46 +1,38 @@
 /********
 * user.js file (models)
 ********/
-
-let sequelize = require('sequelize');
-let Schema = sequelize.Schema;
-
-// var User = new Schema({
-//     name: {
-//         type: String,
-//         required: [true, 'name is required'],
-//         lowercase: true
-//     },
-//     email: {
-//         type: String,
-//         required: [true, 'email is required'],
-//         unique: true,
-//         lowercase: true
-//     }
-// }, {
-//     timestamps: true
-// });
-
-
-// var User = sequelize.define('User',{
-//     name: {
-//         type: String,
-//         required: [true, 'name is required'],
-//         lowercase: true
-//     },
-//     email: {
-//         type: String,
-//         required: [true, 'email is required'],
-//         unique: true,
-//         lowercase: true
-//     }
-// }, {
-//     timestamps: true
-// });
-
-var User = sequelize.define('User', {
-
+const { Sequelize, DataTypes, Model } = require('sequelize');
+// const sequelize = new Sequelize('sqlite::memory');
+const sequelize = new Sequelize('splitter', 'root', 'toor', {
+    host: 'localhost',
+    dialect:'mysql' /* one of 'mysql' | 'mariadb' | 'postgres' | 'mssql' */
 });
 
+const User = sequelize.define('User', {
+    id: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+        autoIncrement: true,
+        primaryKey: true
+    },
+    UserName: {
+        type: DataTypes.STRING,
+        allowNull: false
+    },
+    UserEmail: {
+        type: DataTypes.STRING,
+        allowNull: false
+    },
+    UserPhoneNo: {
+        type: DataTypes.STRING,
+        allowNull: false
+    },
+    UserPassword: {
+        type: DataTypes.STRING,
+        allowNull: false
+    }
+}, {
+    tableName: 'UserList',
+    timestamps: false
+});
 module.exports = User;
-// module.exports = sequelize.model('User', User);

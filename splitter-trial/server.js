@@ -9,6 +9,9 @@ EXPRESS_APPLICATION.use(BODY_PARSER_VAR.json());
 EXPRESS_APPLICATION.listen(PORT, () => {
     console.log("listening");
 });
+
+var promise = new Promise(function (resolve, reject) {
+});
 EXPRESS_APPLICATION.post('/api/users/register', function (req, res) {
     var bodyContents = req.body;
     var reply = AppController.registerUser(
@@ -16,9 +19,8 @@ EXPRESS_APPLICATION.post('/api/users/register', function (req, res) {
         bodyContents["userEmail"],
         bodyContents["userPhone"],
         bodyContents["userPassword"],
-        
     );
-    console.log(reply);
+    // console.log(reply);
     res.send(reply);
 });
 

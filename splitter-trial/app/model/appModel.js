@@ -4,16 +4,13 @@ var Task = function (task){
     this.task = task;
 }
 
+var anotherCallback = function(a1,a2){
+    return a2;
+};
 Task.registerUser = function(userName,userEmail, userPhone, userPassword, callback){
-    sql.query("INSERT INTO UserList (UserName, UserEmail, UserPhoneNo, UserPassword) VALUES ( ?, ?, ?, ?)",
-    [userName, userEmail, userPhone, userPassword],function(err,res) {
-        if(err){
-            console.log(err, "error");
-        }else{
-            // console.log(res);
-            callback(null, res);
-        }
-});
+   var g =  sql.query("INSERT INTO UserList (UserName, UserEmail, UserPhoneNo, UserPassword) VALUES ( ?, ?, ?, ?)",
+    [userName, userEmail, userPhone, userPassword],anotherCallback);
+ console.log(g);
 };
 
 Task.loginUser = function(userName, userPassword){

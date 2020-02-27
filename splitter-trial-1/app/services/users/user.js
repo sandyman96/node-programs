@@ -4,9 +4,13 @@
 const express = require('express');
 const User = require('../../models/user');
 
+console.log("reached here");
+
+debugger;
 const getUsers = async (req, res, next) => {
     try {
-        let users = await User.find({});
+        let users = await User.findAll({});
+        console.log("users" + users);
         if (users.length > 0) {
             return res.status(200).json({
                 'message': 'users fetched successfully',
