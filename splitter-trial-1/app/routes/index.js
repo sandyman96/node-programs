@@ -4,10 +4,10 @@
 const apiRoute = require('./apis'); //apis/index.js   //v1controller is returned
 
 const init = (server) => {
-    server.get('*', function (req, res, next) {
-        console.log('Request was made to: ' + req.originalUrl);
-        return next();
-    });
+    // server.get('*', function (req, res, next) {
+    //     console.log('Request was made to: ' + req.originalUrl);
+    //     return next();
+    // });
     
     server.use('/api', apiRoute);
 }

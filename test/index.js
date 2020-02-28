@@ -11,3 +11,13 @@ app.get('/', (req,res) => {
 });
 
 app.listen(3000);
+
+
+const mysqldb = require('mysql');
+mysqldbconnection = mysqldb.createConnection({host:'localhost',user:'root',password: 'toor',
+                    database: 'splitter'});
+
+mysqldbconnection.connect( (err) => {
+   if(err) console.log(err) ;
+   else console.log("success");
+});

@@ -12,8 +12,9 @@ EXPRESS_APPLICATION.listen(PORT, () => {
 
 var promise = new Promise(function (resolve, reject) {
 });
-EXPRESS_APPLICATION.post('/api/users/register', function (req, res) {
+EXPRESS_APPLICATION.post('/api/users/register',async function (req, res) {
     var bodyContents = req.body;
+    console.log(bodyContents);
     var reply = AppController.registerUser(
         bodyContents["userName"],
         bodyContents["userEmail"],

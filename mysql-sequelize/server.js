@@ -4,16 +4,7 @@ const sequelize = new Sequelize('splitter', 'root', 'toor', {
     host: 'localhost',
     dialect: 'mysql'/* one of 'mysql' | 'mariadb' | 'postgres' | 'mssql' */
 });
-// try {
-//     sequelize.authenticate();
-//     console.log('Connection has been established successfully.');
-// } catch (error) {
-//     console.error('Unable to connect to the database:', error);
-// }
-// const User = sequelize.define('User', {
-// }, {
-//     // Other model options go here
-// });
+
 const User = sequelize.define('User', {
     id: {
         type: DataTypes.INTEGER,
@@ -43,23 +34,30 @@ const User = sequelize.define('User', {
     timestamps: false
 });
 
-let promise = new Promise(function (resolve, reject) {
+// let promise = new Promise(function (resolve, reject) {
+//     const users = User.findAll();
+//     resolve(users);
+// });
+let myPromise = new Promise( (resolve, reject) => {
     const users = User.findAll();
     resolve(users);
-});
+}); 
 
+const users2 = User.findAll();
+// users.then( (ok) => console.log(ok));
+users2.then( (ok) => {console.log(ok);});
+myPromise.then( (ok) => {console.log(ok)} )
+// const checkIfItsDone = () => {
+//     promise
+//         .then(ok => {
+//             console.log(ok)
+//         })
+//         .catch(err => {
+//             console.error(err)
+//         })
+// }
 
-const checkIfItsDone = () => {
-    promise
-        .then(ok => {
-            console.log(ok)
-        })
-        .catch(err => {
-            console.error(err)
-        })
-}
-
-checkIfItsDone();
+// checkIfItsDone();
 
 
 // promise.then( ok => {

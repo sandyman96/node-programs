@@ -1,16 +1,16 @@
 /********
 * user.js file (services/users)
 ********/
-const express = require('express');
 const User = require('../../models/user');
 
 console.log("reached here");
 
-debugger;
 const getUsers = async (req, res, next) => {
+    console.log('inside get users');
     try {
         let users = await User.findAll({});
-        console.log("users" + users);
+        // let usersresult = users.then( (ok) => {console.log(ok);return ok});
+        // console.log(usersresult);
         if (users.length > 0) {
             return res.status(200).json({
                 'message': 'users fetched successfully',
@@ -29,49 +29,32 @@ const getUsers = async (req, res, next) => {
     }
 }
 
-const getUserById = async (req, res, next) => {
-    try {
-        let user = await User.findById(req.params.id);
-        if (user) {
-            return res.status(200).json({
-                'message': `user with id ${req.params.id} fetched successfully`,
-                'data': user
-            });
-        }
-        return res.status(404).json({
-            'code': 'BAD_REQUEST_ERROR',
-            'description': 'No users found in the system'
-        });
-    } catch (error) {
-        return res.status(500).json({
-            'code': 'SERVER_ERROR',
-            'description': 'something went wrong, Please try again'
-        });
-    }
-}
-
-const createUser = async (req, res, next) => {
+const createUsers= async (req, res, next) => {
     try {
         const {
-            name,
-            email
+            UserName,
+            UserEmail,
+            UserPhoneNo,
+            UserPassword,
         } = req.body;
-        if (name === undefined || name === '') {
+        if (UserName === undefined || UserName === '') {
             return res.status(422).json({
                 'code': 'REQUIRED_FIELD_MISSING',
                 'description': 'name is required',
-                'field': 'name'
+                'field': 'UserName'
             });
         }
-        if (email === undefined || email === '') {
+        if (UserEmail === undefined || UserEmail === '') {
             return res.status(422).json({
                 'code': 'REQUIRED_FIELD_MISSING',
                 'description': 'email is required',
-                'field': 'email'
+                'field': 'UserEmail'
             });
         }
-        let isEmailExists = await User.findOne({
-            "email": email
+        let isEmailExists = await User.findAll({
+            where: {
+                UserEmail : UserEmail
+            }
         });
         if (isEmailExists) {
             return res.status(409).json({
@@ -80,14 +63,28 @@ const createUser = async (req, res, next) => {
                 'field': 'email'
             });
         }
-
-        const temp = {
-            name: name,
-            email: email
+        if (UserPhoneNo === undefined || UserPhoneNo === '') {
+            return res.status(422).json({
+                'code': 'REQUIRED_FIELD_MISSING',
+                'description': 'UserPhoneNo is required',
+                'field': 'UserPhoneNo'
+            });
         }
-
+        if (UserPassword === undefined || UserPassword === '') {
+            return res.status(422).json({
+                'code': 'REQUIRED_FIELD_MISSING',
+                'description': 'UserPassword is required',
+                'field': 'UserPassword'
+            });
+        }
+        //create a variable temp for storing the new User.
+        const temp = {
+            UserName: UserName,
+            UserEmail: UserEmail,
+            UserPhoneNumber: UserPhoneNumber,
+            UserPassword: UserPassword
+        }
         let newUser = await User.create(temp);
-
         if (newUser) {
             return res.status(201).json({
                 'message': 'user created successfully',
@@ -104,92 +101,168 @@ const createUser = async (req, res, next) => {
     }
 }
 
-const updateUser = async (req, res, next) => {
-    try {
-        const userId = req.params.id;
-        const {
-            name,
-            email
-        } = req.body;
-        if (name === undefined || name === '') {
-            return res.status(422).json({
-                'code': 'REQUIRED_FIELD_MISSING',
-                'description': 'name is required',
-                'field': 'name'
-            });
-        }
+// const getUserById = async (req, res, next) => {
+//     try {
+//         let user = await User.findById(req.params.id);
+//         if (user) {
+//             return res.status(200).json({
+//                 'message': `user with id ${req.params.id} fetched successfully`,
+//                 'data': user
+//             });
+//         }
+//         return res.status(404).json({
+//             'code': 'BAD_REQUEST_ERROR',
+//             'description': 'No users found in the system'
+//         });
+//     } catch (error) {
+//         return res.status(500).json({
+//             'code': 'SERVER_ERROR',
+//             'description': 'something went wrong, Please try again'
+//         });
+//     }
+// }
 
-        if (email === undefined || email === '') {
-            return res.status(422).json({
-                'code': 'REQUIRED_FIELD_MISSING',
-                'description': 'email is required',
-                'field': 'email'
-            });
-        }
+// const createUser = async (req, res, next) => {
+//     try {
+//         const {
+//             name,
+//             email
+//         } = req.body;
+//         if (name === undefined || name === '') {
+//             return res.status(422).json({
+//                 'code': 'REQUIRED_FIELD_MISSING',
+//                 'description': 'name is required',
+//                 'field': 'name'
+//             });
+//         }
+//         if (email === undefined || email === '') {
+//             return res.status(422).json({
+//                 'code': 'REQUIRED_FIELD_MISSING',
+//                 'description': 'email is required',
+//                 'field': 'email'
+//             });
+//         }
+//         let isEmailExists = await User.findOne({
+//             "email": email
+//         });
+//         if (isEmailExists) {
+//             return res.status(409).json({
+//                 'code': 'ENTITY_ALREAY_EXISTS',
+//                 'description': 'email already exists',
+//                 'field': 'email'
+//             });
+//         }
+
+//         const temp = {
+//             name: name,
+//             email: email
+//         }
+
+//         let newUser = await User.create(temp);
+
+//         if (newUser) {
+//             return res.status(201).json({
+//                 'message': 'user created successfully',
+//                 'data': newUser
+//             });
+//         } else {
+//             throw new Error('something went worng');
+//         }
+//     } catch (error) {
+//         return res.status(500).json({
+//             'code': 'SERVER_ERROR',
+//             'description': 'something went wrong, Please try again'
+//         });
+//     }
+// }
+
+// const updateUser = async (req, res, next) => {
+//     try {
+//         const userId = req.params.id;
+//         const {
+//             name,
+//             email
+//         } = req.body;
+//         if (name === undefined || name === '') {
+//             return res.status(422).json({
+//                 'code': 'REQUIRED_FIELD_MISSING',
+//                 'description': 'name is required',
+//                 'field': 'name'
+//             });
+//         }
+
+//         if (email === undefined || email === '') {
+//             return res.status(422).json({
+//                 'code': 'REQUIRED_FIELD_MISSING',
+//                 'description': 'email is required',
+//                 'field': 'email'
+//             });
+//         }
 
 
-        let isUserExists = await User.findById(userId);
+//         let isUserExists = await User.findById(userId);
 
-        if (!isUserExists) {
-            return res.status(404).json({
-                'code': 'BAD_REQUEST_ERROR',
-                'description': 'No user found in the system'
-            });
-        }
+//         if (!isUserExists) {
+//             return res.status(404).json({
+//                 'code': 'BAD_REQUEST_ERROR',
+//                 'description': 'No user found in the system'
+//             });
+//         }
 
-        const temp = {
-            name: name,
-            email: email
-        }
+//         const temp = {
+//             name: name,
+//             email: email
+//         }
 
-        let updateUser = await User.findByIdAndUpdate(userId, temp, {
-            new: true
-        });
+//         let updateUser = await User.findByIdAndUpdate(userId, temp, {
+//             new: true
+//         });
 
-        if (updateUser) {
-            return res.status(200).json({
-                'message': 'user updated successfully',
-                'data': updateUser
-            });
-        } else {
-            throw new Error('something went worng');
-        }
-    } catch (error) {
+//         if (updateUser) {
+//             return res.status(200).json({
+//                 'message': 'user updated successfully',
+//                 'data': updateUser
+//             });
+//         } else {
+//             throw new Error('something went worng');
+//         }
+//     } catch (error) {
 
-        return res.status(500).json({
-            'code': 'SERVER_ERROR',
-            'description': 'something went wrong, Please try again'
-        });
-    }
-}
+//         return res.status(500).json({
+//             'code': 'SERVER_ERROR',
+//             'description': 'something went wrong, Please try again'
+//         });
+//     }
+// }
 
-const deleteUser = async (req, res, next) => {
-    try {
-        let user = await User.findByIdAndRemove(req.params.id);
-        if (user) {
-            return res.status(204).json({
-                'message': `user with id ${req.params.id} deleted successfully`
-            });
-        }
+// const deleteUser = async (req, res, next) => {
+//     try {
+//         let user = await User.findByIdAndRemove(req.params.id);
+//         if (user) {
+//             return res.status(204).json({
+//                 'message': `user with id ${req.params.id} deleted successfully`
+//             });
+//         }
 
-        return res.status(404).json({
-            'code': 'BAD_REQUEST_ERROR',
-            'description': 'No users found in the system'
-        });
+//         return res.status(404).json({
+//             'code': 'BAD_REQUEST_ERROR',
+//             'description': 'No users found in the system'
+//         });
 
-    } catch (error) {
+//     } catch (error) {
 
-        return res.status(500).json({
-            'code': 'SERVER_ERROR',
-            'description': 'something went wrong, Please try again'
-        });
-    }
-}
+//         return res.status(500).json({
+//             'code': 'SERVER_ERROR',
+//             'description': 'something went wrong, Please try again'
+//         });
+//     }
+// }
 
 module.exports = {
     getUsers: getUsers,
-    getUserById: getUserById,
-    createUser: createUser,
-    updateUser: updateUser,
-    deleteUser: deleteUser
+    createUsers: createUsers,
+    // getUserById: getUserById,
+    // createUser: createUser,
+    // updateUser: updateUser,
+    // deleteUser: deleteUser
 }

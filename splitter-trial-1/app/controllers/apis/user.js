@@ -7,14 +7,22 @@ const express = require('express');
 const userService = require('../../services/users/user');
 let router = express.Router();
 
-router.get('/', userService.getUsers);
+router.get('/users', userService.getUsers);
 
-router.get('/:id', userService.getUserById);
+router.post('/users/register', userService.createUsers );
 
-router.post('/', userService.createUser);
+// router.get('/:id', userService.getUserById);
 
-router.put('/:id', userService.updateUser);
+// router.post('/', userService.createUser);
 
-router.delete('/:id', userService.deleteUser);
+// router.put('/:id', userService.updateUser);
+
+// router.delete('/:id', userService.deleteUser);
 
 module.exports = router;
+
+
+
+/********
+* user.js file (controllers/apis)
+********/

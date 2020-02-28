@@ -6,7 +6,7 @@ this file defines the server configuration.
 */
 const express = require('express');
 const bodyParser = require('body-parser');
-const Sequelize = require('sequelize');
+// const Sequelize = require('sequelize');
 
 module.exports = function () {
     let server = express(),
@@ -23,17 +23,17 @@ module.exports = function () {
         server.use(bodyParser.urlencoded({
             extended: false
         }));
-        sequelize = new Sequelize(db.database, db.user, db.password, {
-            host: db.host,
-            dialect: 'mysql' /* one of 'mysql' | 'mariadb' | 'postgres' | 'mssql' */
-});
-        try {
-            // await sequelize.authenticate();
-            sequelize.authenticate();
-            console.log('Connection has been established successfully.');
-        } catch (error) {
-            console.error('Unable to connect to the database:', error);
-        }
+//         sequelize = new Sequelize(db.database, db.user, db.password, {
+//             host: db.host,
+//             dialect: 'mysql' /* one of 'mysql' | 'mariadb' | 'postgres' | 'mssql' */
+// });
+        // try {
+        //     // await sequelize.authenticate();
+        //     // sequelize.authenticate();
+        //     console.log('Connection has been established successfully.');
+        // } catch (error) {
+        //     console.error('Unable to connect to the database:', error);
+        // }
         // Set up routes
         routes.init(server);
     };

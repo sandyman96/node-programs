@@ -3,7 +3,7 @@
 ********/
 
 const express = require('express');
-const v1ApiController = require('./v1');
+const ApiVersionController = require('./v1');
 let router = express.Router();
-router.use('/v1', v1ApiController);
+router.use('/v1', ApiVersionController);
 module.exports = router;
