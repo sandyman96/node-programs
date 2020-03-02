@@ -5,7 +5,7 @@ const { Sequelize, DataTypes, Model } = require('sequelize');
 // const sequelize = new Sequelize('sqlite::memory');
 const sequelize = new Sequelize('splitter', 'root', 'toor', {
     host: 'localhost',
-    dialect:'mysql' /* one of 'mysql' | 'mariadb' | 'postgres' | 'mssql' */
+    dialect:'mysql'
 });
 
 const User = sequelize.define('User', {

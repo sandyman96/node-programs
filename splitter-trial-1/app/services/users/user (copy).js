@@ -77,15 +77,9 @@ const createUsers= async (req, res, next) => {
             });
         }
         //create a variable temp for storing the new User.
-        // let passWordSaltedAndHashedByBcrypt = bcrypt_const.hash(this.UserPassword, 10);
-        let val = function (z) {
-            return z;
-        };
-        let value;
-        bcrypt_const.hash("myPlaintextPassword", 10,function (err, hash) {
-            value = val(hash);
-        });
-        console.log(value);
+        let passWordSaltedAndHashedByBcrypt = bcrypt_const.hash(this.UserPassword, 10);
+
+        
         let userToBeSaved = {
             UserName: UserName,
             UserEmail: UserEmail,

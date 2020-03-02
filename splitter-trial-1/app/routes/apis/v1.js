@@ -1,11 +1,12 @@
-
 /********
 * v1.js file (inside routes/apis)
 ********/
+const Controller = require('../../controllers/controller'); //router with .get .post etc
+const passport = require('passport');
 
-const userController = require('../../controllers/apis/user'); //router with .get .post etc
 
-const express = require('express');
-let router = express.Router();
-router.use('', userController);
-module.exports = router;
+
+const expressRouter = require('express')();
+expressRouter.use('', (req,res,next)=> {return Controller(req,res,next);});
+module.exports = expressRouter;
+

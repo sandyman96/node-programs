@@ -6,8 +6,8 @@ this file defines the server configuration.
 */
 const express = require('express');
 const bodyParser = require('body-parser');
-// const Sequelize = require('sequelize');
-
+const cookieParser = require('cookie-parser');
+const expressHandlebars = require('express-handlebars');
 module.exports = function () {
     let server = express(),
         create,
@@ -23,18 +23,7 @@ module.exports = function () {
         server.use(bodyParser.urlencoded({
             extended: false
         }));
-//         sequelize = new Sequelize(db.database, db.user, db.password, {
-//             host: db.host,
-//             dialect: 'mysql' /* one of 'mysql' | 'mariadb' | 'postgres' | 'mssql' */
-// });
-        // try {
-        //     // await sequelize.authenticate();
-        //     // sequelize.authenticate();
-        //     console.log('Connection has been established successfully.');
-        // } catch (error) {
-        //     console.error('Unable to connect to the database:', error);
-        // }
-        // Set up routes
+
         routes.init(server);
     };
     start = () => {
@@ -49,22 +38,3 @@ module.exports = function () {
         start: start
     };
 };
-
-
-// const AppController = require("./app/controller/appController");
-// EXPRESS_APPLICATION.use(BODY_PARSER_VAR.json());
-
-// EXPRESS_APPLICATION.listen(PORT, () => {
-//     console.log("listening");
-// });
-// EXPRESS_APPLICATION.post('/api/users/register', function (req, res) {
-//     var bodyContents = req.body;
-//     var reply = AppController.registerUser(
-//         bodyContents["userName"],
-//         bodyContents["userEmail"],
-//         bodyContents["userPhone"],
-//         bodyContents["userPassword"]
-//     );
-//     res.send(reply);
-// });
-
