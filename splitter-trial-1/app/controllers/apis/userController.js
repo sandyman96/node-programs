@@ -7,9 +7,11 @@ const express = require('express');
 const userService = require('../../services/users/userService');
 let router = express.Router();
 
-router.get('/users', userService.getUsers);
+router.get('/', userService.getUsers);
 
-router.post('/users/register', userService.createUsers );
+router.post('/register', userService.createUsers );
+
+router.post('/login', userService.login);
 
 // router.get('/:id', userService.getUserById);
 

@@ -1,11 +1,22 @@
 /********
 * user.js file (services/users)
 ********/
+
+/*
+    https://developer.mozilla.org/en-US/docs/Web/HTTP/Status
+*/
+
 const User = require('../../models/userModel');
+const bcrypt_const = require('../../functions/BCrypt');
+const jwt = require('jsonwebtoken');
+
+require('dotenv').config();
+const secret = process.env.SECRET || 'the default secret';
+
 const getUsers = async (req, res, next) => {
-    console.log('inside get users');
     try {
-        let users = await User.findAll({});
+        let users = await User.findAll({ where : {} , raw : true });
+        console.log(users[0]);
         if (users.length > 0) {
             return res.status(200).json({
                 'message': 'users fetched successfully',
@@ -17,11 +28,9 @@ const getUsers = async (req, res, next) => {
             'description': 'No users found in the system'
         });
     } catch (error) {
-        console.log(error);
         return res.status(500).json({
             'code': 'SERVER_ERROR',
             'description': 'something went wrong, Please try again'
-            
         });
     }
 }
@@ -51,9 +60,10 @@ const createUsers= async (req, res, next) => {
         let isEmailExists = await User.findAll({
             where: {
                 UserEmail : UserEmail
-            }
+            }, 
+            raw : 'true'
         });
-        if (isEmailExists) {
+        if (isEmailExists.length > 0) {
             return res.status(409).json({
                 'code': 'ENTITY_ALREAY_EXISTS',
                 'description': 'email already exists',
@@ -74,14 +84,18 @@ const createUsers= async (req, res, next) => {
                 'field': 'UserPassword'
             });
         }
-        //create a variable temp for storing the new User.
-        const temp = {
+        hashval = bcrypt_const.hashSync(UserPassword,10);
+
+        //
+        let userToBeSaved = {
             UserName: UserName,
             UserEmail: UserEmail,
-            UserPhoneNumber: UserPhoneNumber,
-            UserPassword: UserPassword
+            UserPhoneNo: UserPhoneNo,
+            UserPassword: hashval
         }
-        let newUser = await User.create(temp);
+
+        let newUser = await User.create(userToBeSaved);
+
         if (newUser) {
             return res.status(201).json({
                 'message': 'user created successfully',
@@ -90,7 +104,8 @@ const createUsers= async (req, res, next) => {
         } else {
             throw new Error('something went worng');
         }
-    } catch (error) {
+    }catch (error) {    //try ends here
+        console.log(error);
         return res.status(500).json({
             'code': 'SERVER_ERROR',
             'description': 'something went wrong, Please try again'
@@ -98,6 +113,50 @@ const createUsers= async (req, res, next) => {
     }
 }
 
+const userLogin = async (req, res, next) => {
+    const { UserEmail, UserPassword} = req.body;
+
+    let user = await User.findAll({ where: { UserEmail:UserEmail}, raw: true });
+
+    const compareResult = bcrypt_const.compareSync(UserPassword, user[0]["UserPassword"]);
+    
+    if(compareResult){
+        const payload = {
+            id: user[0].id,
+            name: user[0].UserName
+        };
+        try{
+            jwt.sign(payload, secret, { expiresIn: 36000 },
+                (err, token) => {
+                    if (err) {
+                        return res.status(500).json({
+                                error: "Error signing token",
+                                raw: err
+                            });
+                    }
+                    return res.status(200).json({
+                        'message': 'users fetched successfully',
+                        // 'data': users
+                        token: 'Bearer ${token}'
+                    });
+                    //     res.json({
+                    //     success: true,
+                    //     token: `Bearer ${token}`
+                    // });
+                });
+            }catch (error) {    
+                return res.status(500).json({
+                    'code': 'SERVER_ERROR',
+                    'description': 'something went wrong, Please try again'
+                });
+            } 
+    }else{
+        return res.status(404).json({
+            'code': 'BAD_REQUEST_ERROR',
+            'description': 'No users found in the system'
+        });
+    }
+}
 // const getUserById = async (req, res, next) => {
 //     try {
 //         let user = await User.findById(req.params.id);
@@ -258,6 +317,7 @@ const createUsers= async (req, res, next) => {
 module.exports = {
     getUsers: getUsers,
     createUsers: createUsers,
+    login: userLogin,
     // getUserById: getUserById,
     // createUser: createUser,
     // updateUser: updateUser,

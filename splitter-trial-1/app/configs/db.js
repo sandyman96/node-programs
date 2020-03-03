@@ -1,2 +1,2 @@
-const db = require('./config/dbHome');
+const db = require('./config/dbOffice');
 module.exports = db;
