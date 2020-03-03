@@ -1,13 +1,13 @@
 /********
 * user.js file (services/users)
 ********/
-const User = require('../../models/user');
+const User = require('../../models/userModel');
 const bcrypt_const = require('bcrypt');
 
 const getUsers = async (req, res, next) => {
     try {
-        let users = await User.findAll({ where : {} , raw: true });
-        console.log(users);
+        let users = await User.findAll({ where : {} , raw : true });
+        console.log(users[0]);
         if (users.length > 0) {
             return res.status(200).json({
                 'message': 'users fetched successfully',
@@ -82,8 +82,9 @@ const createUsers= async (req, res, next) => {
             return z;
         };
         let value;
-        bcrypt_const.hash("myPlaintextPassword", 10,function (err, hash) {
-            value = val(hash);
+        bcrypt_const.hash("myPlaintextPassword", 10,await function (err, hash) {
+            value = hash;
+            console.log(value);
         });
         console.log(value);
         let userToBeSaved = {
