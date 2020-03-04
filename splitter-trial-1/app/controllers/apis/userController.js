@@ -1,29 +1,37 @@
 /********
 * user.js file (controllers/apis)
 ********/
-
-
-const express = require('express');
 const userService = require('../../services/users/userService');
-let router = express.Router();
+const expressRouter = require('express')();
+const passport = require('passport');
+const LocalStrategy = require('passport-local').Strategy;
 
-router.get('/', userService.getUsers);
+passport.use(new LocalStrategy((username, password, done) => 
+        {
+            if (username === 'test@gmail.com' && password === '1234') {
+                return done(null, { username: 'test@gmail.com' });
+            } else {
+                return done(null, false);
+            }
+    }
+));
 
-router.post('/register', userService.createUsers );
+expressRouter.get('/', userService.getUsers);
+expressRouter.post('/register', userService.createUsers );
+expressRouter.post('/login', passport.authenticate('local', { session: false}) );
+// expressRouter.post('/login', userService.login);
 
-router.post('/login', userService.login);
+// ,userService.login);
 
-// router.get('/:id', userService.getUserById);
+// expressRouter.get('/:id', userService.getUserById);
 
-// router.post('/', userService.createUser);
+// expressRouter.post('/', userService.createUser);
 
-// router.put('/:id', userService.updateUser);
+// expressRouter.put('/:id', userService.updateUser);
 
-// router.delete('/:id', userService.deleteUser);
+// expressRouter.delete('/:id', userService.deleteUser);
 
-module.exports = router;
-
-
+module.exports = expressRouter;
 
 /********
 * user.js file (controllers/apis)

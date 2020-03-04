@@ -1,11 +1,9 @@
 /********
 * user.js file (services/users)
 ********/
-
 /*
     https://developer.mozilla.org/en-US/docs/Web/HTTP/Status
 */
-
 const User = require('../../models/userModel');
 const bcrypt_const = require('../../functions/BCrypt');
 const jwt = require('jsonwebtoken');
@@ -28,6 +26,7 @@ const getUsers = async (req, res, next) => {
             'description': 'No users found in the system'
         });
     } catch (error) {
+        console.log(error);
         return res.status(500).json({
             'code': 'SERVER_ERROR',
             'description': 'something went wrong, Please try again'
@@ -129,7 +128,6 @@ const userLogin = async (req, res, next) => {
     const { UserEmail, UserPassword} = req.body;
     try{
         let user = await User.findAll({ where: { UserEmail:UserEmail}, raw: true });
-
         if(user.length === 0){
             return res.status(404).json({
                 'code': 'BAD_REQUEST_ERROR',
