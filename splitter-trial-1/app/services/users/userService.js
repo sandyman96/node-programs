@@ -10,7 +10,7 @@ const User = require('../../models/userModel');
 const bcrypt_const = require('../../functions/BCrypt');
 const jwt = require('jsonwebtoken');
 
-require('dotenv').config();
+require('custom-env').env('staging');
 const secret = process.env.SECRET || 'the default secret';
 
 const getUsers = async (req, res, next) => {
@@ -50,6 +50,19 @@ const createUsers= async (req, res, next) => {
                 'field': 'UserName'
             });
         }
+        let isUserNameExists = await User.findAll({
+            where: {
+                UserName: UserName
+            },
+            raw: 'true'
+        });
+        if (isUserNameExists.length > 0) {
+            return res.status(409).json({
+                'code': 'ENTITY_ALREAY_EXISTS',
+                'description': 'Username already exists',
+                'field': 'UserName'
+            });
+        }
         if (UserEmail === undefined || UserEmail === '') {
             return res.status(422).json({
                 'code': 'REQUIRED_FIELD_MISSING',
@@ -85,8 +98,7 @@ const createUsers= async (req, res, next) => {
             });
         }
         hashval = bcrypt_const.hashSync(UserPassword,10);
-
-        //
+        
         let userToBeSaved = {
             UserName: UserName,
             UserEmail: UserEmail,
@@ -99,7 +111,7 @@ const createUsers= async (req, res, next) => {
         if (newUser) {
             return res.status(201).json({
                 'message': 'user created successfully',
-                'data': newUser
+                // 'data': newUser
             });
         } else {
             throw new Error('something went worng');
@@ -115,47 +127,54 @@ const createUsers= async (req, res, next) => {
 
 const userLogin = async (req, res, next) => {
     const { UserEmail, UserPassword} = req.body;
+    try{
+        let user = await User.findAll({ where: { UserEmail:UserEmail}, raw: true });
 
-    let user = await User.findAll({ where: { UserEmail:UserEmail}, raw: true });
-
-    const compareResult = bcrypt_const.compareSync(UserPassword, user[0]["UserPassword"]);
-    
-    if(compareResult){
-        const payload = {
-            id: user[0].id,
-            name: user[0].UserName
-        };
-        try{
-            jwt.sign(payload, secret, { expiresIn: 36000 },
-                (err, token) => {
-                    if (err) {
-                        return res.status(500).json({
-                                error: "Error signing token",
-                                raw: err
-                            });
+        if(user.length === 0){
+            return res.status(404).json({
+                'code': 'BAD_REQUEST_ERROR',
+                'description': 'No users found in the system'
+            });
+        }
+        const isMatchingDbAndUserPasswords = bcrypt_const.compareSync(UserPassword, user[0]["UserPassword"]);
+        
+        if (isMatchingDbAndUserPasswords){
+            const payload = {
+                id: user[0].id,
+                name: user[0].UserName
+            };
+            
+                jwt.sign(payload, secret, { expiresIn: 36000 },
+                    (err, token) => {
+                        if (err) {
+                            return res.status(500).json({
+                                    error: "Error signing token",
+                                    raw: err
+                                });
+                        }
+                        return res.status(200).json({
+                            'message': 'users fetched successfully',
+                            // 'data': users
+                            token: `Bearer ${token}`
+                        });
+                        //     res.json({
+                        //     success: true,
+                        //     token: `Bearer ${token}`
+                        // });
                     }
-                    return res.status(200).json({
-                        'message': 'users fetched successfully',
-                        // 'data': users
-                        token: 'Bearer ${token}'
-                    });
-                    //     res.json({
-                    //     success: true,
-                    //     token: `Bearer ${token}`
-                    // });
-                });
-            }catch (error) {    
-                return res.status(500).json({
-                    'code': 'SERVER_ERROR',
-                    'description': 'something went wrong, Please try again'
-                });
-            } 
-    }else{
-        return res.status(404).json({
-            'code': 'BAD_REQUEST_ERROR',
-            'description': 'No users found in the system'
+                );
+        }else{
+            return res.status(404).json({
+                'code': 'BAD_REQUEST_ERROR',
+                'description': 'No users found in the system'
+            });
+        }
+    }catch (error) {
+        return res.status(500).json({
+            'code': 'SERVER_ERROR',
+            'description': 'something went wrong, Please try again'
         });
-    }
+    } 
 }
 // const getUserById = async (req, res, next) => {
 //     try {
