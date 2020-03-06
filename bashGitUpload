@@ -11,4 +11,4 @@ echo $var2
 echo $(git -C $PWD add .)
 #echo $(git -C ~/node-programs add .)
 echo $(git -C $PWD commit -m "$commitMessage")
-echo $(git -C $PWD push sandyman96 sandeep@96)
+echo $(git -C $PWD push 'https://sandyman96:sandeep@96@github.com/sandyman96/node-programs')
