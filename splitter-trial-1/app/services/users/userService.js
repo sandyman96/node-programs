@@ -10,10 +10,11 @@ const jwt = require('jsonwebtoken');
 
 require('custom-env').env('staging');
 const secret = process.env.SECRET || 'the default secret';
+console.log(secret);
 
 const getUsers = async (req, res, next) => {
     try {
-        let users = await User.findAll({ where : {} , raw : true });
+        let users =  await User.findAll({ where : {} , raw : true });
         console.log(users[0]);
         if (users.length > 0) {
             return res.status(200).json({
@@ -97,16 +98,13 @@ const createUsers= async (req, res, next) => {
             });
         }
         hashval = bcrypt_const.hashSync(UserPassword,10);
-        
         let userToBeSaved = {
             UserName: UserName,
             UserEmail: UserEmail,
             UserPhoneNo: UserPhoneNo,
             UserPassword: hashval
         }
-
         let newUser = await User.create(userToBeSaved);
-
         if (newUser) {
             return res.status(201).json({
                 'message': 'user created successfully',
@@ -125,6 +123,7 @@ const createUsers= async (req, res, next) => {
 }
 
 const userLogin = async (req, res, next) => {
+    console.log(req.body);  
     const { UserEmail, UserPassword} = req.body;
     try{
         let user = await User.findAll({ where: { UserEmail:UserEmail}, raw: true });
@@ -135,13 +134,11 @@ const userLogin = async (req, res, next) => {
             });
         }
         const isMatchingDbAndUserPasswords = bcrypt_const.compareSync(UserPassword, user[0]["UserPassword"]);
-        
         if (isMatchingDbAndUserPasswords){
             const payload = {
                 id: user[0].id,
                 name: user[0].UserName
             };
-            
                 jwt.sign(payload, secret, { expiresIn: 36000 },
                     (err, token) => {
                         if (err) {
@@ -334,7 +331,7 @@ const userLogin = async (req, res, next) => {
 module.exports = {
     getUsers: getUsers,
     createUsers: createUsers,
-    login: userLogin,
+    userLogin: userLogin,
     // getUserById: getUserById,
     // createUser: createUser,
     // updateUser: updateUser,
