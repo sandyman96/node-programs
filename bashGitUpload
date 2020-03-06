@@ -10,4 +10,4 @@ echo $var2
 
 echo $(git -C $PWD add .)
 #echo $(git -C ~/node-programs add .)
-echo $(git -C $PWD commit -m $commitMessage)
+echo $(git -C $PWD commit -m "$commitMessage")
