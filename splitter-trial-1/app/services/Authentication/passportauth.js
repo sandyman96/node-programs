@@ -50,5 +50,3 @@ const authLocal = passport.authenticate('jwt', {
 });
 
 module.exports = authLocal;
-
-//a new change
